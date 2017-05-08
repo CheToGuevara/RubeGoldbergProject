@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
 
     public GameObject m_VRprefab;
     public GameObject m_CardBoardprefab;
+    public GameObject m_eventSystem;
 
     public string[] levelname;
     public SteamVR_LoadLevel loadlevel;
@@ -19,17 +20,19 @@ public class GameManager : MonoBehaviour {
 	void Awake () {
 
 #if UNITY_ANDROID
-         m_camera = m_CardBoardprefab;
-
-        Instantiate(m_CardBoardprefab);
+        m_camera= Instantiate(m_CardBoardprefab);
+        m_eventSystem= Instantiate(m_eventSystem);
         var mode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
         UnityEngine.SceneManagement.SceneManager.LoadScene(levelname[levelnum], mode);
+        DontDestroyOnLoad(m_eventSystem);
 #elif UNITY_EDITOR_WIN
-        m_camera = m_CardBoardprefab;
-        
-        Instantiate(m_CardBoardprefab);
+
+
+        m_camera = Instantiate(m_CardBoardprefab);
+        m_eventSystem= Instantiate(m_eventSystem);
+        DontDestroyOnLoad(m_eventSystem);
         var mode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(levelname[levelnum], mode);
+        //UnityEngine.SceneManagement.SceneManager.LoadScene(levelname[levelnum], mode);
 #else
         m_camera = m_VRprefab;
         Instantiate(m_VRprefab);
@@ -37,13 +40,15 @@ public class GameManager : MonoBehaviour {
 #endif
         DontDestroyOnLoad(m_camera);
         DontDestroyOnLoad(this);
+        DontDestroyOnLoad(loadlevel);
 
     }
 
     // Update is called once per frame
-    /*void Update () {
-		
-	}*/
+    void Update () {
+        if (Input.GetAxis("Jump")>0)
+            changeLevel();
+	}
 
 
     public void changeLevel ()
@@ -55,7 +60,7 @@ public class GameManager : MonoBehaviour {
         UnityEngine.SceneManagement.SceneManager.LoadScene(levelname[levelnum], mode);
 #elif UNITY_EDITOR_WIN
 
-        var mode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
+        var mode = UnityEngine.SceneManagement.LoadSceneMode.Single;
         UnityEngine.SceneManagement.SceneManager.LoadScene(levelname[levelnum], mode);
 #else
        
@@ -64,4 +69,18 @@ public class GameManager : MonoBehaviour {
 
 
     }
+
+
+
+    public void onTeleportTrigger()
+    {
+        RaycastHit hit;
+
+
+        if (Physics.Raycast(m_camera.transform.position, m_camera.transform.forward, out hit))
+        {
+            m_camera.transform.position = hit.point + new Vector3(0, 10, 0);
+        }
+    }
+
 }
