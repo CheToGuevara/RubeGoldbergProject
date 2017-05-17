@@ -25,7 +25,13 @@ public class BallReset : MonoBehaviour {
             m_rigidbody.velocity = zero;
             m_rigidbody.angularVelocity = zero;
             transform.rotation = Quaternion.Euler(zero);
+            m_rigidbody.isKinematic = true;
         }
             
+    }
+
+    public void onBallClick()
+    {
+        m_rigidbody.isKinematic = false;
     }
 }

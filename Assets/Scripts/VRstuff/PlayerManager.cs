@@ -14,7 +14,9 @@ public class PlayerManager : MonoBehaviour {
 
         if (Physics.Raycast(m_camera.transform.position, m_camera.transform.forward, out hit))
         {
-            m_camera.transform.position = hit.point + new Vector3(0, 1, 0);
+            Debug.Log("Teleport");
+            Debug.Log(hit.point);
+            m_camera.transform.position = hit.point + new Vector3(0, 0.01f, 0);
         }
     }
 

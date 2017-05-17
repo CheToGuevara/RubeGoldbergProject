@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour {
 
         if (Physics.Raycast(m_camera.transform.position, m_camera.transform.forward, out hit))
         {
-            m_camera.transform.position = hit.point + new Vector3(0, 10, 0);
+            m_camera.transform.position = hit.point + transform.up;
         }
     }
 
